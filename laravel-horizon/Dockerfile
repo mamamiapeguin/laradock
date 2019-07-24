@@ -20,7 +20,8 @@ RUN apk --update add wget \
   autoconf \
   cyrus-sasl-dev \
   libgsasl-dev \
-  supervisor
+  supervisor \
+  procps
 
 RUN docker-php-ext-install mysqli mbstring pdo pdo_mysql tokenizer xml pcntl
 RUN pecl channel-update pecl.php.net && pecl install memcached mcrypt-1.0.1 && docker-php-ext-enable memcached
@@ -29,6 +30,12 @@ RUN pecl channel-update pecl.php.net && pecl install memcached mcrypt-1.0.1 && d
 ARG INSTALL_BCMATH=false
 RUN if [ ${INSTALL_BCMATH} = true ]; then \
   docker-php-ext-install bcmath \
+  ;fi
+
+#Install Sockets package:
+ARG INSTALL_AMQP=false
+RUN if [ ${INSTALL_AMQP} = true ]; then \
+  docker-php-ext-install sockets \
   ;fi
 
 # Install PostgreSQL drivers:
